@@ -3,6 +3,7 @@ package greasel
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 // Query builder DSL
@@ -49,7 +50,13 @@ func (q *Query) InnerJoin(binding *Table, on ...Filter) *Query {
 func (q *Query) SQL() string {
 	buf := bytes.Buffer{}
 
-	buf.WriteString(fmt.Sprintf("FROM %s %s ", q.From.source, q.alias(q.From)))
+	selections := make([]string, 0, len(q.From.Fields()))
+	for _, field := range q.From.Fields() {
+		selections = append(selections, q.falias(field))
+	}
+	buf.WriteString(fmt.Sprintf("SELECT %s ", strings.Join(selections, ",")))
+
+	buf.WriteString(fmt.Sprintf("FROM %s AS %s ", q.From.source, q.alias(q.From)))
 
 	if q.Joins != nil {
 		for _, join := range q.Joins {

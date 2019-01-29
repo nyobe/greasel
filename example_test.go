@@ -43,11 +43,11 @@ func Example() {
 	u, p := NewUserAlias(), NewPhotoAlias()
 
 	q := From(u.Table). // fixme -> interface
-		Where(u.Id.Eq(1)).
+		Where(Or(u.Id.Eq(1), u.Id.Eq(2))).
 		InnerJoin(u.PhotoAssoc(p))
 
 	fmt.Println(q.SQL())
 
 	// Output:
-	// FROM users u0 INNER JOIN posts AS p1 ON (p1.user_id = u0.id )  WHERE (u0.id = ? )
+	// SELECT u0.id FROM users AS u0 INNER JOIN posts AS p1 ON (p1.user_id = u0.id )  WHERE ((u0.id = ?  OR u0.id = ? ) )
 }

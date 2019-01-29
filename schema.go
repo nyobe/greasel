@@ -23,6 +23,7 @@ func NewTable(name string) *Table {
 
 // Fields returns all fields on this table
 func (t *Table) Fields() []*Field {
+	// fixme, this is non-deterministic -> ordered field map?
 	lst := make([]*Field, 0, len(t.fields))
 	for _, f := range t.fields {
 		lst = append(lst, f)
